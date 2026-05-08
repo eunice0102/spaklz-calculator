@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>周邊團購/清單計算器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background:
+                linear-gradient(115deg, rgba(236, 72, 153, 0.18) 0 18%, transparent 18% 100%),
+                linear-gradient(155deg, rgba(34, 211, 238, 0.2) 0 22%, transparent 22% 100%),
+                linear-gradient(135deg, #111827 0%, #1f2937 42%, #f8fafc 42%, #eef2ff 100%);
+            min-height: 100vh;
+        }
+
+        .img-preview {
+            width: 96px;
+            height: 96px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: zoom-in;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button { opacity: 1; }
+    </style>
+</head>
+<body class="p-4 md:p-8 text-slate-800">
+    <div class="max-w-6xl mx-auto overflow-hidden rounded-lg bg-white/95 shadow-2xl shadow-slate-950/25 ring-1 ring-white/40 backdrop-blur">
+        <header class="relative overflow-hidden bg-slate-950 px-6 py-10 text-white md:px-10">
+            <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan-300 via-pink-400 to-amber-300"></div>
+            <div class="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,transparent_58%,rgba(236,72,153,0.16)_58%,rgba(236,72,153,0.16)_72%,transparent_72%)]"></div>
+            <div class="relative flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                <div>
+                    <p class="mb-3 text-xs font-semibold uppercase tracking-[0.32em] text-cyan-200">Merch Calculator</p>
+                    <h1 class="text-3xl font-black tracking-tight md:text-5xl">POP-UP: SPAKLZ 2026 WORLD TOUR</h1>
+                </div>
+                <div class="w-fit rounded-lg border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-black/20">
+                    KRW Order List
+                </div>
+            </div>
+        </header>
+
+        <div class="overflow-x-auto px-4 py-5 md:px-8">
+            <table class="w-full min-w-[760px] overflow-hidden rounded-lg text-left">
+                <thead>
+                    <tr class="border-b border-slate-200 bg-slate-100/90">
+                        <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">圖片</th>
+                        <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">商品名稱</th>
+                        <th class="px-4 py-4 text-center text-xs font-bold uppercase tracking-wider text-slate-500">總款數</th>
+                        <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">選項（攻／受／隨機）</th>
+                        <th class="px-4 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">單價 (₩)</th>
+                        <th class="px-4 py-4 text-center text-xs font-bold uppercase tracking-wider text-slate-500">數量</th>
+                        <th class="px-4 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">總額 (₩)</th>
+                    </tr>
+                </thead>
+                <tbody id="item-list" class="divide-y divide-slate-100">
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/1.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">아크릴 스탠드（壓克力立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻</td><td class="px-4 py-3 text-right font-medium text-slate-700">15,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="15000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/1.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">아크릴 스탠드（壓克力立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受</td><td class="px-4 py-3 text-right font-medium text-slate-700">15,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="15000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/2.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">컬렉션 포토카드 A（收藏小卡 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 3張</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/2.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">컬렉션 포토카드 B（收藏小卡 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 3張</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/3.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">AR STAR 캔뱃지 A（AR STAR 徽章 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/3.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">AR STAR 캔뱃지 B（AR STAR 徽章 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/4.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">렌티큘러 티켓 A（光柵票 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 1張</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/4.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">렌티큘러 티켓 B（光柵票 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 1張</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/5.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">스케이스 키트（SHOW CASE 套組）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">36,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="36000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/6.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">NFC 미니 CD 키링（NFC 迷你 CD 鑰匙圈）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">14,500</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="14500" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/7.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">직캠 스탠드（直拍立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻</td><td class="px-4 py-3 text-right font-medium text-slate-700">12,500</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="12500" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/7.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">직캠 스탠드（直拍立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受</td><td class="px-4 py-3 text-right font-medium text-slate-700">12,500</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="12500" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/8.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">콘서트 티셔츠, 포토카드（演唱會 T-shirt、小卡）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">47,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="47000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/9.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">직캠 엽서 A（直拍明信片 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,500</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5500" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/9.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">직캠 엽서 B（直拍明信片 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,500</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5500" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/10.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">크로스오버 비하인드 스냅팩（CROSSOVER 幕後 SNAP PACK）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/11.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">크로스오버 아크릴 스탠드（CROSSOVER 壓克力立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">13,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="13000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/12.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">스핀 아크릴 스탠드（旋轉壓克力立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">13,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="13000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/13.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">슬로건（手幅）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">16,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="16000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/14.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 미니어처 키링 A（迷你模型鑰匙圈 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">7,500</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="7500" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/14.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 미니어처 키링 B（迷你模型鑰匙圈 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">7,500</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="7500" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/15.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 컬렉션 미니 스탠드 A（收藏迷你立牌 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">4,200</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="4200" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/15.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 컬렉션 미니 스탠드 B（收藏迷你立牌 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">4,200</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="4200" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/16.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">스테이지 미니 스탠드（舞台迷你立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">10</td><td class="px-4 py-3 text-sm text-slate-500">隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,500</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5500" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/17.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 인형 A（娃娃 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻</td><td class="px-4 py-3 text-right font-medium text-slate-700">19,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="19000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/17.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 인형 B（娃娃 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受</td><td class="px-4 py-3 text-right font-medium text-slate-700">19,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="19000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/18.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">PVC 파우치 키링（PVC 收納包鑰匙圈）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">15,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="15000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/19.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">응원봉 플러시 키링（應援棒絨毛鑰匙圈）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">14,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="14000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/20.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 인형 콘서트 티셔츠（娃娃演唱會 T-shirt）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">9,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="9000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/21.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 의상팩 A（娃娃服裝包 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">18,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="18000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/22.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 의상팩 B（娃娃服裝包 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">18,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="18000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/23.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 의상팩 C（娃娃服裝包 C）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">18,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="18000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/24.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 의상팩 D（娃娃服裝包 D）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">23,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="23000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/25.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">A3 단체 포스터 A（A3 團體海報 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500">攻</td><td class="px-4 py-3 text-right font-medium text-slate-700">15,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="15000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/26.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">A3 단체 포스터 B（A3 團體海報 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500">受</td><td class="px-4 py-3 text-right font-medium text-slate-700">15,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="15000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/27.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">시즌그리팅（Season's Greetings）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">60,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="60000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/28.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">컬렉션포토（卡包）</td><td class="px-4 py-3 text-center font-medium text-slate-700">13</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><input type="number" value="0" min="0" data-price="5000" class="qty-input w-20 rounded-lg border border-slate-200 bg-white px-3 py-2 text-center font-semibold shadow-sm outline-none transition focus:border-pink-400 focus:ring-4 focus:ring-pink-100"></td><td class="subtotal px-4 py-3 text-right text-lg font-black text-slate-950">0</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="grid gap-4 border-t border-slate-100 bg-slate-50/90 p-5 md:grid-cols-[1fr_auto] md:items-center md:p-8">
+            <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-400">Order Summary</p>
+                <p class="mt-1 text-slate-600">SPAKLZ POP-UP MERCH</p>
+            </div>
+            <div class="flex flex-col gap-3 sm:flex-row md:justify-end">
+                <div class="rounded-lg border border-slate-200 bg-white px-5 py-4 shadow-sm">
+                    <div class="text-sm font-medium text-slate-500">總合計金額</div>
+                    <div class="mt-1 whitespace-nowrap text-3xl font-black text-slate-950">
+                        <span id="grand-total">0</span>
+                        <span class="ml-1 text-xl text-pink-500">₩</span>
+                    </div>
+                </div>
+                <div class="rounded-lg border border-cyan-200 bg-cyan-50 px-5 py-4 shadow-sm">
+                    <div class="flex items-center gap-2 text-sm font-medium text-cyan-800">
+                        <span>台幣換算</span>
+                        <label class="flex items-center gap-1 text-xs text-cyan-700">
+                            匯率
+                            <input id="exchange-rate" type="number" value="0.024" min="0" step="0.001" class="w-20 rounded border border-cyan-200 bg-white px-2 py-1 text-right font-semibold outline-none transition focus:border-cyan-500 focus:ring-2 focus:ring-cyan-100">
+                        </label>
+                    </div>
+                    <div class="mt-1 whitespace-nowrap text-3xl font-black text-cyan-700">
+                        NT$
+                        <span id="twd-total">0</span>
+                    </div>
+                </div>
+                <div class="rounded-lg border border-pink-200 bg-pink-50 px-5 py-4 shadow-sm">
+                    <div class="text-sm font-medium text-pink-700">10 萬韓元滿額特典</div>
+                    <div class="mt-1 whitespace-nowrap text-3xl font-black text-pink-600">
+                        <span id="bonus-count">0</span>
+                        <span class="ml-1 text-xl">份</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="image-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-950/80 p-4">
+        <button id="close-modal" type="button" class="absolute right-4 top-4 rounded-lg bg-white/10 px-4 py-2 text-2xl font-bold leading-none text-white transition hover:bg-white/20" aria-label="關閉圖片預覽">&times;</button>
+        <img id="modal-image" src="" alt="商品圖片預覽" class="max-h-[88vh] max-w-[92vw] rounded-lg bg-white object-contain shadow-2xl">
+    </div>
+
+    <script>
+        const qtyInputs = document.querySelectorAll('.qty-input');
+        const grandTotalDisplay = document.getElementById('grand-total');
+        const exchangeRateInput = document.getElementById('exchange-rate');
+        const twdTotalDisplay = document.getElementById('twd-total');
+        const bonusDisplay = document.getElementById('bonus-count');
+        const imageInputs = document.querySelectorAll('.image-input');
+        const imageModal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image');
+        const closeModalButton = document.getElementById('close-modal');
+
+        function calculate() {
+            let total = 0;
+            document.querySelectorAll('#item-list tr').forEach(row => {
+                const qty = parseInt(row.querySelector('.qty-input').value) || 0;
+                const price = parseInt(row.querySelector('.qty-input').dataset.price);
+                const subtotal = qty * price;
+                row.querySelector('.subtotal').textContent = subtotal.toLocaleString();
+                total += subtotal;
+            });
+            
+            grandTotalDisplay.textContent = total.toLocaleString();
+            const exchangeRate = parseFloat(exchangeRateInput.value) || 0;
+            twdTotalDisplay.textContent = Math.round(total * exchangeRate).toLocaleString();
+            // 計算滿額特典 (每100,000一份)
+            bonusDisplay.textContent = Math.floor(total / 100000);
+        }
+
+        // 監聽數量變動
+        qtyInputs.forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+
+        exchangeRateInput.addEventListener('input', calculate);
+
+        // 處理圖片上傳預覽
+        imageInputs.forEach(input => {
+            input.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                const container = this.parentElement.querySelector('div');
+                const hint = container.querySelector('.upload-hint');
+                const preview = container.querySelector('.img-preview');
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.classList.remove('hidden');
+                        hint.classList.add('hidden');
+                        container.classList.add('border-solid');
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        document.querySelectorAll('.img-preview').forEach(image => {
+            image.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                if (!this.src) return;
+                modalImage.src = this.src;
+                imageModal.classList.remove('hidden');
+                imageModal.classList.add('flex');
+            });
+        });
+
+        function closeImageModal() {
+            imageModal.classList.add('hidden');
+            imageModal.classList.remove('flex');
+            modalImage.src = '';
+        }
+
+        closeModalButton.addEventListener('click', closeImageModal);
+        imageModal.addEventListener('click', function(e) {
+            if (e.target === imageModal) closeImageModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !imageModal.classList.contains('hidden')) {
+                closeImageModal();
+            }
+        });
+
+        // 初始化計算一次
+        calculate();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
