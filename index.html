@@ -146,9 +146,14 @@
                     <div class="text-lg font-black text-cyan-700 leading-none">NT$ <span id="twd-total">0</span></div>
                 </div>
 
-                <div class="bg-pink-50 border border-pink-100 rounded-xl px-4 py-3 flex flex-col justify-center min-w-[100px]">
-                    <span class="text-[10px] font-bold text-pink-600 uppercase mb-1">特典</span>
-                    <div class="text-lg font-black text-pink-700 leading-none"><span id="bonus-count">0</span><span class="ml-1 text-sm">份</span></div>
+                <div class="bg-pink-50 border border-pink-100 rounded-xl px-4 py-2 flex flex-col justify-center min-w-[90px]">
+                    <span class="text-[10px] font-bold text-pink-600 uppercase mb-1">5W 特典</span>
+                    <div class="text-lg font-black text-pink-700 leading-none"><span id="bonus-5w">0</span><span class="ml-1 text-sm">份</span></div>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-100 rounded-xl px-4 py-2 flex flex-col justify-center min-w-[90px]">
+                    <span class="text-[10px] font-bold text-amber-600 uppercase mb-1">10W 特典</span>
+                    <div class="text-lg font-black text-amber-700 leading-none"><span id="bonus-10w">0</span><span class="ml-1 text-sm">份</span></div>
                 </div>
             </div>
         </div>
@@ -165,9 +170,10 @@
         const grandTotalDisplay = document.getElementById('grand-total');
         const exchangeRateInput = document.getElementById('exchange-rate');
         const twdTotalDisplay = document.getElementById('twd-total');
-        const bonusDisplay = document.getElementById('bonus-count');
         const imageModal = document.getElementById('image-modal');
         const modalImage = document.getElementById('modal-image');
+        const bonus5wDisplay = document.getElementById('bonus-5w');
+        const bonus10wDisplay = document.getElementById('bonus-10w');
 
         function calculate() {
             let total = 0;
@@ -183,7 +189,8 @@
             });
             grandTotalDisplay.textContent = total.toLocaleString();
             twdTotalDisplay.textContent = Math.round(total * (parseFloat(exchangeRateInput.value) || 0)).toLocaleString();
-            bonusDisplay.textContent = Math.floor(total / 100000);
+            bonus5wDisplay.textContent = Math.floor(total / 50000);
+            bonus10wDisplay.textContent = Math.floor(total / 100000);
         }
 
         qtyInputs.forEach(i => i.addEventListener('input', calculate));
