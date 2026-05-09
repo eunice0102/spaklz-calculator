@@ -21,9 +21,6 @@
             border-radius: 8px;
             cursor: zoom-in;
         }
-
-        
-
         /* 手機版轉卡片佈局 */
         @media (max-width: 768px) {
             thead { display: none; }
@@ -52,6 +49,7 @@
             #item-list td:nth-child(3) { display: none !important; } 
             .qty-input { width: 100px !important; height: 44px; }
         }
+
     </style>
 </head>
 <button onclick="exportList()" title="生成購物清單" 
@@ -264,17 +262,17 @@
             const subtotal = (qty * parseInt(input.dataset.price)).toLocaleString();
             
             itemRows += `
-                <tr style="border-bottom: 1px solid #eee;">
-                    <td style="padding: 10px 0; width: 60px;">
-                        <img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #e2e8f0;">
-                    </td>
-                    <td style="padding: 10px 8px;">
-                        <div style="font-weight: bold; color: #1e293b; font-size: 14px;">${name}</div>
-                        <div style="font-size: 11px; color: #64748b;">${spec}</div>
-                    </td>
-                    <td style="padding: 10px 0; text-align: center; font-size: 14px;">${qty}</td>
-                    <td style="padding: 10px 0; text-align: right; font-weight: bold; font-size: 14px;">₩ ${subtotal}</td>
-                </tr>`;
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 12px 0;">
+                    <img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                </td>
+                <td style="padding: 12px 8px;">
+                    <div style="font-weight: bold; color: #1e293b; font-size: 15px; line-height: 1.2;">${name}</div>
+                    <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">${spec}</div>
+                </td>
+                <td style="padding: 12px 0; text-align: center; font-size: 15px;">${qty}</td>
+                <td style="padding: 12px 0; text-align: right; font-weight: bold; font-size: 15px; color: #0f172a;">₩ ${subtotal}</td>
+            </tr>`;
         }
     });
 
@@ -290,10 +288,13 @@
             <title>Spaklz 2026 購物清單</title>
             <style>
                 body { font-family: -apple-system, sans-serif; padding: 20px; background: #f1f5f9; color: #334155; }
-                .receipt { max-width: 450px; margin: auto; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+                .receipt {width: 95%;max-width: 800px;margin: 10px auto;background: white;padding: 20px;border-radius: 12px;box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
                 h1 { text-align: center; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 20px; border-bottom: 2px solid #0f172a; padding-bottom: 10px; }
-                table { width: 100%; border-collapse: collapse; }
-                th { text-align: left; font-size: 10px; color: #94a3b8; text-transform: uppercase; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9; }
+                table {width: 100%; border-collapse: collapse;table-layout: fixed; /* 固定佈局確保比例一致 */}
+                th:nth-child(1), td:nth-child(1) { width: 60px; }  /* 圖片欄 */
+                th:nth-child(2), td:nth-child(2) { width: auto; }  /* 名稱欄（自動伸展） */
+                th:nth-child(3), td:nth-child(3) { width: 50px; }  /* 數量欄 */
+                th:nth-child(4), td:nth-child(4) { width: 100px; } /* 小計欄 */ }
                 .total-box { background: #f8fafc; padding: 15px; border-radius: 12px; margin-top: 20px; border: 1px solid #e2e8f0; }
                 .bonus { color: #be123c; font-size: 0.85rem; margin-top: 15px; padding: 10px; border-left: 4px solid #fb7185; background: #fff1f2; }
                 @media print { body { background: white; padding: 0; } .receipt { border: none; box-shadow: none; width: 100%; max-width: none; } }
