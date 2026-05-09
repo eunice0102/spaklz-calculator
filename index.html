@@ -54,6 +54,15 @@
         }
     </style>
 </head>
+<button onclick="exportList()" title="生成購物清單" 
+    class="fixed right-6 bottom-45 z-[100] flex h-14 w-14 items-center justify-center rounded-full bg-cyan-600 text-white shadow-2xl shadow-cyan-900/20 transition-all hover:bg-cyan-500 hover:scale-110 active:scale-95 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+    </svg>
+    <span class="absolute right-full mr-3 hidden rounded bg-slate-800 px-2 py-1 text-xs text-white group-hover:block whitespace-nowrap">
+        生成清單
+    </span>
+</button>
 <body class="p-4 md:p-8 text-slate-800">
     <div class="max-w-6xl mx-auto overflow-hidden rounded-lg bg-white/95 shadow-2xl shadow-slate-950/25 ring-1 ring-white/40 backdrop-blur mb-8">
         <header class="relative overflow-hidden bg-slate-950 px-6 py-10 text-white md:px-10">
@@ -163,76 +172,165 @@
     </div>
 
     <script>
-        // 腳本部分邏輯維持不變，僅確保選取正確的 ID
-        const qtyInputs = document.querySelectorAll('.qty-input');
-        const grandTotalDisplay = document.getElementById('grand-total');
-        const exchangeRateInput = document.getElementById('exchange-rate');
-        const twdTotalDisplay = document.getElementById('twd-total');
-        const imageModal = document.getElementById('image-modal');
-        const modalImage = document.getElementById('modal-image');
-        const bonus5wDisplay = document.getElementById('bonus-5w');
-        const bonus10wDisplay = document.getElementById('bonus-10w');
+    
+    // 腳本部分邏輯維持不變，僅確保選取正確的 ID
+    const qtyInputs = document.querySelectorAll('.qty-input');
+    const grandTotalDisplay = document.getElementById('grand-total');
+    const exchangeRateInput = document.getElementById('exchange-rate');
+    const twdTotalDisplay = document.getElementById('twd-total');
+    const imageModal = document.getElementById('image-modal');
+    const modalImage = document.getElementById('modal-image');
+    const bonus5wDisplay = document.getElementById('bonus-5w');
+    const bonus10wDisplay = document.getElementById('bonus-10w');
 
-        function calculate() {
-            let total = 0;
-            document.querySelectorAll('#item-list tr').forEach(row => {
-                const input = row.querySelector('.qty-input');
-                if(!input) return;
-                const qty = parseInt(input.value) || 0;
-                const price = parseInt(input.dataset.price);
-                const subtotal = qty * price;
-                const subDisplay = row.querySelector('.subtotal');
-                if(subDisplay) subDisplay.textContent = subtotal.toLocaleString();
-                total += subtotal;
-            });
-            grandTotalDisplay.textContent = total.toLocaleString();
-            twdTotalDisplay.textContent = Math.round(total * (parseFloat(exchangeRateInput.value) || 0)).toLocaleString();
-            bonus5wDisplay.textContent = Math.floor(total / 50000);
-            bonus10wDisplay.textContent = Math.floor(total / 100000);
+    function calculate() {
+        let total = 0;
+        document.querySelectorAll('#item-list tr').forEach(row => {
+            const input = row.querySelector('.qty-input');
+            if(!input) return;
+            const qty = parseInt(input.value) || 0;
+            const price = parseInt(input.dataset.price);
+            const subtotal = qty * price;
+            const subDisplay = row.querySelector('.subtotal');
+            if(subDisplay) subDisplay.textContent = subtotal.toLocaleString();
+            total += subtotal;
+        });
+        grandTotalDisplay.textContent = total.toLocaleString();
+        twdTotalDisplay.textContent = Math.round(total * (parseFloat(exchangeRateInput.value) || 0)).toLocaleString();
+        bonus5wDisplay.textContent = Math.floor(total / 50000);
+        bonus10wDisplay.textContent = Math.floor(total / 100000);
+    }
+
+    qtyInputs.forEach(i => i.addEventListener('input', calculate));
+    exchangeRateInput.addEventListener('input', calculate);
+    
+    document.querySelectorAll('.img-preview').forEach(img => {
+        img.onclick = () => {
+            modalImage.src = img.src;
+            imageModal.classList.replace('hidden', 'flex');
         }
+    });
+    imageModal.onclick = () => imageModal.classList.replace('flex', 'hidden');
+    calculate();
+    function initQtySteppers() {
+        document.querySelectorAll('#item-list tr').forEach(row => {
+            const minusBtn = row.querySelector('.minus-btn');
+            const plusBtn = row.querySelector('.plus-btn');
+            const input = row.querySelector('.qty-input');
 
-        qtyInputs.forEach(i => i.addEventListener('input', calculate));
-        exchangeRateInput.addEventListener('input', calculate);
-        
-        document.querySelectorAll('.img-preview').forEach(img => {
-            img.onclick = () => {
-                modalImage.src = img.src;
-                imageModal.classList.replace('hidden', 'flex');
+            if (minusBtn && plusBtn && input) {
+                // 點擊減號
+                minusBtn.onclick = () => {
+                    let val = parseInt(input.value) || 0;
+                    if (val > 0) {
+                        input.value = val - 1;
+                        calculate(); // 呼叫原本的計算函式
+                    }
+                };
+
+                // 點擊加號
+                plusBtn.onclick = () => {
+                    let val = parseInt(input.value) || 0;
+                    input.value = val + 1;
+                    calculate(); // 呼叫原本的計算函式
+                };
+
+                // 如果使用者手動輸入數值，也要觸發計算
+                input.oninput = calculate;
             }
         });
-        imageModal.onclick = () => imageModal.classList.replace('flex', 'hidden');
-        calculate();
-        function initQtySteppers() {
-            document.querySelectorAll('#item-list tr').forEach(row => {
-                const minusBtn = row.querySelector('.minus-btn');
-                const plusBtn = row.querySelector('.plus-btn');
-                const input = row.querySelector('.qty-input');
+    }
 
-                if (minusBtn && plusBtn && input) {
-                    // 點擊減號
-                    minusBtn.onclick = () => {
-                        let val = parseInt(input.value) || 0;
-                        if (val > 0) {
-                            input.value = val - 1;
-                            calculate(); // 呼叫原本的計算函式
-                        }
-                    };
-
-                    // 點擊加號
-                    plusBtn.onclick = () => {
-                        let val = parseInt(input.value) || 0;
-                        input.value = val + 1;
-                        calculate(); // 呼叫原本的計算函式
-                    };
-
-                    // 如果使用者手動輸入數值，也要觸發計算
-                    input.oninput = calculate;
-                }
-            });
+    // 頁面載入後執行初始化
+    initQtySteppers();
+    function exportList() {
+    const total = document.getElementById('grand-total').textContent;
+    const twdTotal = document.getElementById('twd-total').textContent;
+    const bonus5w = document.getElementById('bonus-5w').textContent;
+    const bonus10w = document.getElementById('bonus-10w').textContent;
+    
+    let itemRows = "";
+    document.querySelectorAll('#item-list tr').forEach(row => {
+        const input = row.querySelector('.qty-input');
+        const qty = parseInt(input?.value) || 0;
+        
+        if (qty > 0) {
+            // 抓取圖片網址
+            const imgBtn = row.querySelector('.img-preview');
+            const imgSrc = imgBtn ? imgBtn.src : "";
+            
+            const name = row.querySelector('td:nth-child(2)').innerText;
+            const spec = row.querySelector('td:nth-child(4)').innerText;
+            const subtotal = (qty * parseInt(input.dataset.price)).toLocaleString();
+            
+            itemRows += `
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 10px 0; width: 60px;">
+                        <img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #e2e8f0;">
+                    </td>
+                    <td style="padding: 10px 8px;">
+                        <div style="font-weight: bold; color: #1e293b; font-size: 14px;">${name}</div>
+                        <div style="font-size: 11px; color: #64748b;">${spec}</div>
+                    </td>
+                    <td style="padding: 10px 0; text-align: center; font-size: 14px;">${qty}</td>
+                    <td style="padding: 10px 0; text-align: right; font-weight: bold; font-size: 14px;">₩ ${subtotal}</td>
+                </tr>`;
         }
+    });
 
-        // 頁面載入後執行初始化
-        initQtySteppers();
+    if (itemRows === "") {
+        alert("請先選擇商品數量喔！");
+        return;
+    }
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Spaklz 2026 購物清單</title>
+            <style>
+                body { font-family: -apple-system, sans-serif; padding: 20px; background: #f1f5f9; color: #334155; }
+                .receipt { max-width: 450px; margin: auto; background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+                h1 { text-align: center; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 20px; border-bottom: 2px solid #0f172a; padding-bottom: 10px; }
+                table { width: 100%; border-collapse: collapse; }
+                th { text-align: left; font-size: 10px; color: #94a3b8; text-transform: uppercase; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9; }
+                .total-box { background: #f8fafc; padding: 15px; border-radius: 12px; margin-top: 20px; border: 1px solid #e2e8f0; }
+                .bonus { color: #be123c; font-size: 0.85rem; margin-top: 15px; padding: 10px; border-left: 4px solid #fb7185; background: #fff1f2; }
+                @media print { body { background: white; padding: 0; } .receipt { border: none; box-shadow: none; width: 100%; max-width: none; } }
+            </style>
+        </head>
+        <body>
+            <div class="receipt">
+                <h1>SPAKLZ 2026 TOUR</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>商品項目</th>
+                            <th style="text-align: center;">數量</th>
+                            <th style="text-align: right;">小計</th>
+                        </tr>
+                    </thead>
+                    <tbody>${itemRows}</tbody>
+                </table>
+                <div class="total-box">
+                    <div style="display:flex; justify-content:space-between; font-size: 16px;"><span>總計 (KRW)</span><span>₩ ${total}</span></div>
+                    <div style="display:flex; justify-content:space-between; color:#4338ca; margin-top:5px; font-weight: bold;"><span>預估 (TWD)</span><span>NT$ ${twdTotal}</span></div>
+                </div>
+                <div class="bonus">
+                    <div style="font-weight: bold; margin-bottom: 4px;">🎁 特典計算結果：</div>
+                    <div>• 5W 滿額特典：${bonus5w} 份</div>
+                    <div>• 10W 滿額特典：${bonus10w} 份</div>
+                </div>
+                <div style="text-align: center; font-size: 10px; color: #cbd5e1; margin-top: 20px;">
+                    Generated at ${new Date().toLocaleString()}
+                </div>
+            </div>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+}
     </script>
 </body>
 </html>
