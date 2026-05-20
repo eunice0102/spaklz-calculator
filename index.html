@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spaklz 2026清單計算器</title>
+    <title>Spaklz 2026 清單計算器</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <style>
         body {
             background:
@@ -21,7 +22,41 @@
             border-radius: 8px;
             cursor: zoom-in;
         }
-        /* 手機版轉卡片佈局 */
+
+        .tweet-trigger {
+            width: 96px;
+            height: 96px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: linear-gradient(135deg, #0f172a, #155e75);
+            color: white;
+            box-shadow: 0 10px 18px rgba(15, 23, 42, 0.16);
+            cursor: zoom-in;
+        }
+
+        .tweet-trigger span {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .tweet-trigger small {
+            font-size: 11px;
+            color: #bae6fd;
+        }
+
+        .tweet-embed-shell {
+            max-height: 84vh;
+            overflow: auto;
+            border-radius: 12px;
+            background: white;
+            padding: 8px;
+        }
+
         @media (max-width: 768px) {
             thead { display: none; }
             #item-list tr {
@@ -43,25 +78,24 @@
             #item-list td:nth-child(1) { justify-content: center; }
             #item-list td:nth-child(2) { font-size: 1.1rem; justify-content: center; text-align: center; color: #0f172a; }
             #item-list td:nth-child(4) { justify-content: center; color: #64748b; font-size: 0.875rem; margin-bottom: 0.5rem; }
-            #item-list td:nth-child(5)::before { content: "單價"; font-weight: bold; color: #94a3b8; }
+            #item-list td:nth-child(5)::before { content: "價格"; font-weight: bold; color: #94a3b8; }
             #item-list td:nth-child(6)::before { content: "數量"; font-weight: bold; color: #94a3b8; }
-            #item-list td:nth-child(7)::before { content: "小計"; font-weight: bold; color: #db2777; }
-            #item-list td:nth-child(3) { display: none !important; } 
+            #item-list td:nth-child(3) { display: none !important; }
             .qty-input { width: 100px !important; height: 44px; }
         }
-
     </style>
 </head>
-<button onclick="exportList()" title="生成購物清單" 
-    class="fixed right-6 bottom-45 z-[100] flex h-14 w-14 items-center justify-center rounded-full bg-cyan-600 text-white shadow-2xl shadow-cyan-900/20 transition-all hover:bg-cyan-500 hover:scale-110 active:scale-95 group">
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-    </svg>
-    <span class="absolute right-full mr-3 hidden rounded bg-slate-800 px-2 py-1 text-xs text-white group-hover:block whitespace-nowrap">
-        生成清單
-    </span>
-</button>
 <body class="p-4 md:p-8 text-slate-800">
+    <button onclick="exportList()" title="生成購物清單"
+        class="fixed right-6 bottom-45 z-[100] flex h-14 w-14 items-center justify-center rounded-full bg-cyan-600 text-white shadow-2xl shadow-cyan-900/20 transition-all hover:bg-cyan-500 hover:scale-110 active:scale-95 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+        <span class="absolute right-full mr-3 hidden rounded bg-slate-800 px-2 py-1 text-xs text-white group-hover:block whitespace-nowrap">
+            生成清單
+        </span>
+    </button>
+
     <div class="max-w-6xl mx-auto overflow-hidden rounded-lg bg-white/95 shadow-2xl shadow-slate-950/25 ring-1 ring-white/40 backdrop-blur mb-8">
         <header class="relative overflow-hidden bg-slate-950 px-6 py-10 text-white md:px-10">
             <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-cyan-300 via-pink-400 to-amber-300"></div>
@@ -78,50 +112,14 @@
                 <thead>
                     <tr class="border-b border-slate-200 bg-slate-100/90">
                         <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">圖片</th>
-                        <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">商品名稱</th>
-                        <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">數量</th>
-                        <th class="px-4 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">總額 (₩)</th>
+                        <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">品項名稱</th>
+                        <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-slate-500 text-center">種類</th>
+                        <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-slate-500">備註</th>
+                        <th class="px-4 py-4 text-right text-xs font-bold uppercase tracking-wider text-slate-500">價格 (KRW)</th>
+                        <th class="px-4 py-4 text-center text-xs font-bold uppercase tracking-wider text-slate-500">數量</th>
                     </tr>
                 </thead>
-                <tbody id="item-list" class="divide-y divide-slate-100">
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/1.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">아크릴 스탠드（壓克力立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻</td><td class="px-4 py-3 text-right font-medium text-slate-700">15,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="15000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/1.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">아크릴 스탠드（壓克力立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受</td><td class="px-4 py-3 text-right font-medium text-slate-700">15,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="15000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/2.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">컬렉션 포토카드 A（收藏小卡 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 3張</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/2.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">컬렉션 포토카드 B（收藏小卡 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 3張</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/3.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">AR STAR 캔뱃지 A（AR STAR 徽章 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/3.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">AR STAR 캔뱃지 B（AR STAR 徽章 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/4.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">렌티큘러 티켓 A（光柵票 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 1張</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/4.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">렌티큘러 티켓 B（光柵票 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 1張</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/5.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">스케이스 키트（SHOW CASE 套組）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">36,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="36000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/6.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">NFC 미니 CD 키링（NFC 迷你 CD 鑰匙圈）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">14,500</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="14500" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/7.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">직캠 스탠드（直拍立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻</td><td class="px-4 py-3 text-right font-medium text-slate-700">12,500</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="12500" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/7.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">직캠 스탠드（直拍立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受</td><td class="px-4 py-3 text-right font-medium text-slate-700">12,500</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="12500" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/8.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">콘서트 티셔츠, 포토카드（演唱會 T-shirt、小卡）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">47,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="47000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/9.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">직캠 엽서 A（直拍明信片 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,500</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5500" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/9.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">직캠 엽서 B（直拍明信片 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,500</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5500" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/10.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">크로스오버 비하인드 스냅팩（CROSSOVER 幕後 SNAP PACK）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/11.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">크로스오버 아크릴 스탠드（CROSSOVER 壓克力立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">13,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="13000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/12.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">스핀 아크릴 스탠드（旋轉壓克力立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">13,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="13000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/13.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">슬로건（手幅）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">16,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="16000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/14.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 미니어처 키링 A（迷你模型鑰匙圈 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">7,500</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="7500" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/14.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 미니어처 키링 B（迷你模型鑰匙圈 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">7,500</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="7500" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/15.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 컬렉션 미니 스탠드 A（收藏迷你立牌 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">4,200</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="4200" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/15.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 컬렉션 미니 스탠드 B（收藏迷你立牌 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受，隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">4,200</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="4200" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/16.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">스테이지 미니 스탠드（舞台迷你立牌）</td><td class="px-4 py-3 text-center font-medium text-slate-700">10</td><td class="px-4 py-3 text-sm text-slate-500">隨機 1種</td><td class="px-4 py-3 text-right font-medium text-slate-700">5,500</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5500" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/17.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 인형 A（娃娃 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">攻</td><td class="px-4 py-3 text-right font-medium text-slate-700">19,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="19000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/17.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 인형 B（娃娃 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">14</td><td class="px-4 py-3 text-sm text-slate-500">受</td><td class="px-4 py-3 text-right font-medium text-slate-700">19,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="19000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/18.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">PVC 파우치 키링（PVC 收納包鑰匙圈）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">15,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="15000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/19.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">응원봉 플러시 키링（應援棒絨毛鑰匙圈）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">14,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="14000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/20.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 인형 콘서트 티셔츠（娃娃演唱會 T-shirt）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">9,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="9000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/21.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 의상팩 A（娃娃服裝包 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">18,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="18000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/22.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 의상팩 B（娃娃服裝包 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">18,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="18000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/23.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 의상팩 C（娃娃服裝包 C）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">18,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="18000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/24.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">뽀시래기 의상팩 D（娃娃服裝包 D）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">23,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="23000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/25.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">A3 단체 포스터 A（A3 團體海報 A）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500">攻</td><td class="px-4 py-3 text-right font-medium text-slate-700">15,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="15000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/26.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">A3 단체 포스터 B（A3 團體海報 B）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500">受</td><td class="px-4 py-3 text-right font-medium text-slate-700">15,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="15000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/27.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">시즌그리팅（Season's Greetings）</td><td class="px-4 py-3 text-center font-medium text-slate-700">1</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">60,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="60000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                    <tr class="transition-colors hover:bg-cyan-50/60"><td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm"><img src="images/28.png" class="img-preview"></div></td><td class="px-4 py-3 font-semibold text-slate-900">컬렉션포토（卡包）</td><td class="px-4 py-3 text-center font-medium text-slate-700">13</td><td class="px-4 py-3 text-sm text-slate-500"></td><td class="px-4 py-3 text-right font-medium text-slate-700">5,000</td><td class="px-4 py-3 text-center"><div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white"><button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button><input type="number" value="0" min="0" data-price="5000" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"> <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button></div></td></tr>
-                </tbody>
+                <tbody id="item-list" class="divide-y divide-slate-100"></tbody>
             </table>
         </div>
     </div>
@@ -132,17 +130,17 @@
                 <p class="text-xs font-bold uppercase tracking-widest text-slate-400">Live Total</p>
                 <p class="text-slate-600 font-medium text-sm">SPAKLZ POP-UP 2026</p>
             </div>
-            
+
             <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-row md:gap-4">
                 <div class="col-span-2 sm:flex-1 bg-slate-900 text-white rounded-xl px-4 py-3 flex justify-between items-center sm:min-w-[180px]">
                     <span class="text-xs font-medium text-slate-400">總計</span>
-                    <div class="text-xl font-black"><span id="grand-total">0</span><span class="ml-1 text-sm text-pink-400">₩</span></div>
+                    <div class="text-xl font-black"><span id="grand-total">0</span><span class="ml-1 text-sm text-pink-400">원</span></div>
                 </div>
 
                 <div class="col-span-2 sm:flex-1 bg-indigo-950 text-white rounded-xl px-4 py-3 flex justify-between items-center sm:min-w-[180px] shadow-lg shadow-indigo-900/40 border border-indigo-500/20">
                     <div class="flex items-center gap-2 shrink-0">
                         <span class="text-[10px] font-bold text-indigo-300 uppercase tracking-tighter">TWD</span>
-                        <input id="exchange-rate" type="number" value="0.023" step="0.001" 
+                        <input id="exchange-rate" type="number" value="0.023" step="0.001"
                             class="w-12 bg-transparent text-[10px] font-bold border-b border-indigo-400/50 outline-none text-indigo-100 focus:border-white transition-colors">
                     </div>
 
@@ -166,32 +164,113 @@
 
     <div id="image-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-950/80 p-4">
         <button id="close-modal" type="button" class="absolute right-4 top-4 rounded-lg bg-white/10 px-4 py-2 text-2xl font-bold text-white">&times;</button>
-        <img id="modal-image" src="" class="max-h-[88vh] max-w-[92vw] rounded-lg bg-white object-contain shadow-2xl">
+        <div class="flex max-h-[92vh] max-w-[92vw] flex-col items-center gap-3">
+            <img id="modal-image" src="" class="max-h-[82vh] max-w-[92vw] rounded-lg bg-white object-contain shadow-2xl">
+            <div id="modal-tweet" class="tweet-embed-shell hidden"></div>
+            <a id="modal-source-link" href="#" target="_blank" rel="noopener noreferrer" class="hidden rounded-lg bg-white px-4 py-2 text-sm font-bold text-slate-900 shadow-lg">開啟原貼文</a>
+        </div>
     </div>
 
     <script>
-    
-    // 腳本部分邏輯維持不變，僅確保選取正確的 ID
-    const qtyInputs = document.querySelectorAll('.qty-input');
+    const tweetUrls = {
+        shirt: 'https://x.com/makurohime/status/2057004049283883212?s=20',
+        crossoverSnap: 'https://x.com/dollshikii/status/2057105607308480785?s=20',
+        collectionPhotocard: 'https://x.com/dollshikii/status/2057072996435538212?s=20',
+        AR_star:'https://x.com/k_mung09/status/2057059193153257576?s=20',
+        banner:'https://x.com/seupun106/status/2057001966002446346',
+        postcard:'https://x.com/seupun106/status/2057008628650123761?s=20',
+        acrylic_stand2:'',
+        showcase:'https://x.com/seupun106/status/2056998843271753928?s=20',
+        fancam_stand:'https://x.com/seupun106/status/2057005884426027075?s=20',
+        ticket:'https://x.com/seupun106/status/2056996890571644949?s=20',
+        Spin_Acrylic:'https://x.com/seupun106/status/2056998843271753928',
+
+
+    };
+
+    const items = [
+        { img: 'images/1.png', name: '아크릴 스탠드（壓克力立牌）', types: 14, note: '攻', price: 15000 },
+        { img: 'images/1.png', name: '아크릴 스탠드（壓克力立牌）', types: 14, note: '受', price: 15000, tweetUrl: tweetUrls.acrylic_stand2  },
+        { img: 'images/2.png', name: '컬렉션 포토카드 A（收藏小卡 A）', types: 14, note: '攻，隨機 3張', price: 5000, tweetUrl: tweetUrls.collectionPhotocard },
+        { img: 'images/2.png', name: '컬렉션 포토카드 B（收藏小卡 B）', types: 14, note: '受，隨機 3張', price: 5000, tweetUrl: tweetUrls.collectionPhotocard },
+        { img: 'images/3.png', name: 'AR STAR 캔뱃지 A（AR STAR 徽章 A）', types: 14, note: '攻，隨機 1種', price: 5000, tweetUrl: tweetUrls.AR_star },
+        { img: 'images/3.png', name: 'AR STAR 캔뱃지 B（AR STAR 徽章 B）', types: 14, note: '受，隨機 1種', price: 5000, tweetUrl: tweetUrls.AR_star },
+        { img: 'images/4.png', name: '렌티큘러 티켓 A（光柵票 A）', types: 14, note: '攻，隨機 1張', price: 5000, tweetUrl: tweetUrls.ticket },
+        { img: 'images/4.png', name: '렌티큘러 티켓 B（光柵票 B）', types: 14, note: '受，隨機 1張', price: 5000, tweetUrl: tweetUrls.ticket },
+        { img: 'images/5.png', name: '쇼케이스 키트（SHOW CASE 套組）', types: 14, note: '', price: 36000, tweetUrl: tweetUrls.showcase },
+        { img: 'images/6.png', name: 'NFC 미니 CD 키링（NFC 迷你 CD 鑰匙圈）', types: 14, note: '', price: 14500 },
+        { img: 'images/7.png', name: '직캠 스탠드（直拍立牌）', types: 14, note: '攻', price: 12500, tweetUrl: tweetUrls.fancam_stand },
+        { img: 'images/7.png', name: '직캠 스탠드（直拍立牌）', types: 14, note: '受', price: 12500, tweetUrl: tweetUrls.fancam_stand },
+        { img: 'images/8.png', name: '콘서트 티셔츠, 포토카드（演唱會 T-shirt、小卡）', types: 1, note: '', price: 47000, tweetUrl: tweetUrls.shirt },
+        { img: 'images/9.png', name: '직캠 엽서 A（直拍明信片 A）', types: 14, note: '攻，隨機 1種', price: 5500, tweetUrl: tweetUrls.postcard },
+        { img: 'images/9.png', name: '직캠 엽서 B（直拍明信片 B）', types: 14, note: '受，隨機 1種', price: 5500, tweetUrl: tweetUrls.postcard },
+        { img: 'images/10.png',name: '크로스오버 비하인드 스냅팩（CROSSOVER 幕後 拍立得）', types: 14, note: '隨機 1種', price: 5000, tweetUrl: tweetUrls.crossoverSnap},
+        { img: 'images/11.png', name: '크로스오버 아크릴 스탠드（CROSSOVER 壓克力立牌）', types: 14, note: '', price: 13000 },
+        { img: 'images/12.png', name: '스핀 아크릴 스탠드（旋轉壓克力立牌）', types: 14, note: '', price: 13000, tweetUrl: tweetUrls.Spin_Acrylic },
+        { img: 'images/13.png', name: '스파클즈 슬로건（SPAKLZ 手幅）', types: 14, note: '', price: 16000, tweetUrl: tweetUrls.banner },
+        { img: 'images/14.png', name: '뽀시래기 미니 키링 A（娃娃迷你吊飾 A）', types: 14, note: '攻', price: 7500 },
+        { img: 'images/14.png', name: '뽀시래기 미니 키링 B（娃娃迷你吊飾 B）', types: 14, note: '受', price: 7500 },
+        { img: 'images/15.png', name: '뽀시래기 컬렉션 미니 스탠드 A（娃娃收藏迷你立牌 A）', types: 14, note: '攻', price: 4200 },
+        { img: 'images/15.png', name: '뽀시래기 컬렉션 미니 스탠드 B（娃娃收藏迷你立牌 B）', types: 14, note: '受', price: 4200 },
+        { img: 'images/16.png', name: '스테이지 미니 스탠드（舞台迷你立牌）', types: 10, note: '隨機 1種', price: 5500 },
+        { img: 'images/17.png', name: '뽀시래기 인형 A（娃娃 A）', types: 14, note: '攻', price: 19000 },
+        { img: 'images/17.png', name: '뽀시래기 인형 B（娃娃 B）', types: 14, note: '受', price: 19000 },
+        { img: 'images/18.png', name: 'PVC 파우치 키링（PVC 收納包鑰匙圈）', types: 1, note: '', price: 15000 },
+        { img: 'images/19.png', name: '응원봉 플러시 키링（應援棒絨毛鑰匙圈）', types: 1, note: '', price: 14000 },
+        { img: 'images/20.png', name: '뽀시래기 인형 콘서트 티셔츠（娃娃演唱會 T-shirt）', types: 1, note: '', price: 9000 },
+        { img: 'images/21.png', name: '뽀시래기 의상팩 A（娃娃服裝包 A）', types: 1, note: '', price: 18000 },
+        { img: 'images/22.png', name: '뽀시래기 의상팩 B（娃娃服裝包 B）', types: 1, note: '', price: 18000 },
+        { img: 'images/23.png', name: '뽀시래기 의상팩 C（娃娃服裝包 C）', types: 1, note: '', price: 18000 },
+        { img: 'images/24.png', name: '뽀시래기 의상팩 D（娃娃服裝包 D）', types: 1, note: '', price: 23000 },
+        { img: 'images/25.png', name: 'A3 단체 포스터 A（A3 團體海報 A）', types: 1, note: '攻', price: 15000 },
+        { img: 'images/26.png', name: 'A3 단체 포스터 B（A3 團體海報 B）', types: 1, note: '受', price: 15000 },
+        { img: 'images/27.png', name: '시즌그리팅（Season\'s Greetings）', types: 1, note: '', price: 60000 },
+        { img: 'images/28.png', name: '컬렉션포토（卡包）', types: 13, note: '', price: 5000 }
+    ];
+
+    const itemList = document.getElementById('item-list');
     const grandTotalDisplay = document.getElementById('grand-total');
     const exchangeRateInput = document.getElementById('exchange-rate');
     const twdTotalDisplay = document.getElementById('twd-total');
     const imageModal = document.getElementById('image-modal');
     const modalImage = document.getElementById('modal-image');
+    const modalTweet = document.getElementById('modal-tweet');
+    const modalSourceLink = document.getElementById('modal-source-link');
     const bonus5wDisplay = document.getElementById('bonus-5w');
     const bonus10wDisplay = document.getElementById('bonus-10w');
+
+    function imageCell(item) {
+
+        const tweetAttr = item.tweetUrl ? ` data-tweet-url="${item.tweetUrl}"` : '';
+        return `<img src="${item.img}" class="img-preview"${tweetAttr} alt="${item.name}">`;
+    }
+
+    function renderRows() {
+        itemList.innerHTML = items.map(item => `
+            <tr class="transition-colors hover:bg-cyan-50/60">
+                <td class="px-4 py-3"><div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">${imageCell(item)}</div></td>
+                <td class="px-4 py-3 font-semibold text-slate-900">${item.name}</td>
+                <td class="px-4 py-3 text-center font-medium text-slate-700">${item.types}</td>
+                <td class="px-4 py-3 text-sm text-slate-500">${item.note}</td>
+                <td class="px-4 py-3 text-right font-medium text-slate-700">${item.price.toLocaleString()}</td>
+                <td class="px-4 py-3 text-center">
+                    <div class="inline-flex items-center rounded-lg border border-slate-200 overflow-hidden shadow-sm bg-white">
+                        <button type="button" class="minus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-r border-slate-200 text-lg font-bold text-slate-600">-</button>
+                        <input type="number" value="0" min="0" data-price="${item.price}" class="qty-input w-12 h-10 text-center font-black outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                        <button type="button" class="plus-btn w-10 h-10 flex items-center justify-center hover:bg-slate-50 transition-colors border-l border-slate-200 text-lg font-bold text-slate-600">+</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
 
     function calculate() {
         let total = 0;
         document.querySelectorAll('#item-list tr').forEach(row => {
             const input = row.querySelector('.qty-input');
-            if(!input) return;
+            if (!input) return;
             const qty = parseInt(input.value) || 0;
-            const price = parseInt(input.dataset.price);
-            const subtotal = qty * price;
-            const subDisplay = row.querySelector('.subtotal');
-            if(subDisplay) subDisplay.textContent = subtotal.toLocaleString();
-            total += subtotal;
+            total += qty * parseInt(input.dataset.price);
         });
         grandTotalDisplay.textContent = total.toLocaleString();
         twdTotalDisplay.textContent = Math.round(total * (parseFloat(exchangeRateInput.value) || 0)).toLocaleString();
@@ -199,139 +278,157 @@
         bonus10wDisplay.textContent = Math.floor(total / 100000);
     }
 
-    qtyInputs.forEach(i => i.addEventListener('input', calculate));
-    exchangeRateInput.addEventListener('input', calculate);
-    
-    document.querySelectorAll('.img-preview').forEach(img => {
-        img.onclick = () => {
-            modalImage.src = img.src;
-            imageModal.classList.replace('hidden', 'flex');
+    function showImageModal(src) {
+        modalTweet.classList.add('hidden');
+        modalTweet.innerHTML = '';
+        modalImage.src = src;
+        modalImage.classList.remove('hidden');
+        modalSourceLink.classList.add('hidden');
+        imageModal.classList.replace('hidden', 'flex');
+    }
+
+    function showTweetModal(tweetUrl) {
+        modalImage.classList.add('hidden');
+        modalImage.src = '';
+        modalTweet.classList.remove('hidden');
+        modalTweet.innerHTML = `<blockquote class="twitter-tweet" data-hide-thread="true" data-conversation="none"><a href="${tweetUrl}"></a></blockquote>`;
+        modalSourceLink.href = tweetUrl;
+        modalSourceLink.classList.remove('hidden');
+        imageModal.classList.replace('hidden', 'flex');
+
+        if (window.twttr?.widgets) {
+            window.twttr.widgets.load(modalTweet);
+        } else {
+            document.querySelector('script[src*="platform.twitter.com/widgets.js"]')?.addEventListener('load', () => {
+                window.twttr?.widgets?.load(modalTweet);
+            }, { once: true });
         }
-    });
-    imageModal.onclick = () => imageModal.classList.replace('flex', 'hidden');
-    calculate();
-    function initQtySteppers() {
+    }
+
+    function bindEvents() {
         document.querySelectorAll('#item-list tr').forEach(row => {
             const minusBtn = row.querySelector('.minus-btn');
             const plusBtn = row.querySelector('.plus-btn');
             const input = row.querySelector('.qty-input');
+            const preview = row.querySelector('.img-preview');
+            const tweetButton = row.querySelector('.tweet-trigger');
 
-            if (minusBtn && plusBtn && input) {
-                // 點擊減號
-                minusBtn.onclick = () => {
-                    let val = parseInt(input.value) || 0;
-                    if (val > 0) {
-                        input.value = val - 1;
-                        calculate(); // 呼叫原本的計算函式
-                    }
-                };
+            minusBtn.onclick = () => {
+                input.value = Math.max(0, (parseInt(input.value) || 0) - 1);
+                calculate();
+            };
+            plusBtn.onclick = () => {
+                input.value = (parseInt(input.value) || 0) + 1;
+                calculate();
+            };
+            input.oninput = calculate;
 
-                // 點擊加號
-                plusBtn.onclick = () => {
-                    let val = parseInt(input.value) || 0;
-                    input.value = val + 1;
-                    calculate(); // 呼叫原本的計算函式
-                };
-
-                // 如果使用者手動輸入數值，也要觸發計算
-                input.oninput = calculate;
+            if (preview) {
+                preview.onclick = () => preview.dataset.tweetUrl ? showTweetModal(preview.dataset.tweetUrl) : showImageModal(preview.src);
+            }
+            if (tweetButton) {
+                tweetButton.onclick = () => showTweetModal(tweetButton.dataset.tweetUrl);
             }
         });
+
+        exchangeRateInput.oninput = calculate;
+        imageModal.onclick = () => imageModal.classList.replace('flex', 'hidden');
+        document.getElementById('close-modal').onclick = () => imageModal.classList.replace('flex', 'hidden');
+        modalImage.onclick = event => event.stopPropagation();
+        modalTweet.onclick = event => event.stopPropagation();
+        modalSourceLink.onclick = event => event.stopPropagation();
     }
 
-    // 頁面載入後執行初始化
-    initQtySteppers();
     function exportList() {
-    const total = document.getElementById('grand-total').textContent;
-    const twdTotal = document.getElementById('twd-total').textContent;
-    const bonus5w = document.getElementById('bonus-5w').textContent;
-    const bonus10w = document.getElementById('bonus-10w').textContent;
-    
-    let itemRows = "";
-    document.querySelectorAll('#item-list tr').forEach(row => {
-        const input = row.querySelector('.qty-input');
-        const qty = parseInt(input?.value) || 0;
-        
-        if (qty > 0) {
-            // 抓取圖片網址
-            const imgBtn = row.querySelector('.img-preview');
-            const imgSrc = imgBtn ? imgBtn.src : "";
-            
+        const total = grandTotalDisplay.textContent;
+        const twdTotal = twdTotalDisplay.textContent;
+        const bonus5w = bonus5wDisplay.textContent;
+        const bonus10w = bonus10wDisplay.textContent;
+
+        let itemRows = '';
+        document.querySelectorAll('#item-list tr').forEach(row => {
+            const input = row.querySelector('.qty-input');
+            const qty = parseInt(input?.value) || 0;
+            if (qty <= 0) return;
+
+            const img = row.querySelector('.img-preview');
+            const imgSrc = img ? img.src : '';
             const name = row.querySelector('td:nth-child(2)').innerText;
             const spec = row.querySelector('td:nth-child(4)').innerText;
             const subtotal = (qty * parseInt(input.dataset.price)).toLocaleString();
-            
+
             itemRows += `
             <tr style="border-bottom: 1px solid #f1f5f9;">
-                <td style="padding: 12px 0;">
-                    <img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
-                </td>
+                <td style="padding: 12px 0;">${imgSrc ? `<img src="${imgSrc}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">` : ''}</td>
                 <td style="padding: 12px 8px;">
                     <div style="font-weight: bold; color: #1e293b; font-size: 15px; line-height: 1.2;">${name}</div>
                     <div style="font-size: 12px; color: #94a3b8; margin-top: 2px;">${spec}</div>
                 </td>
                 <td style="padding: 12px 0; text-align: center; font-size: 15px;">${qty}</td>
-                <td style="padding: 12px 0; text-align: right; font-weight: bold; font-size: 15px; color: #0f172a;">₩ ${subtotal}</td>
+                <td style="padding: 12px 0; text-align: right; font-weight: bold; font-size: 15px; color: #0f172a;">₩${subtotal}</td>
             </tr>`;
-        }
-    });
+        });
 
-    if (itemRows === "") {
-        alert("請先選擇商品數量喔！");
-        return;
+        if (itemRows === '') {
+            alert('請先選擇商品數量');
+            return;
+        }
+
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Spaklz 2026 購物清單</title>
+                <style>
+                    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 20px; background: #f1f5f9; color: #334155; }
+                    .receipt { width: 95%; max-width: 800px; margin: 10px auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+                    h1 { text-align: center; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 20px; border-bottom: 2px solid #0f172a; padding-bottom: 10px; }
+                    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+                    th:nth-child(1), td:nth-child(1) { width: 60px; }
+                    th:nth-child(2), td:nth-child(2) { width: auto; }
+                    th:nth-child(3), td:nth-child(3) { width: 50px; }
+                    th:nth-child(4), td:nth-child(4) { width: 100px; }
+                    .total-box { background: #f8fafc; padding: 15px; border-radius: 12px; margin-top: 20px; border: 1px solid #e2e8f0; }
+                    .bonus { color: #be123c; font-size: 0.85rem; margin-top: 15px; padding: 10px; border-left: 4px solid #fb7185; background: #fff1f2; }
+                    @media print { body { background: white; padding: 0; } .receipt { border: none; box-shadow: none; width: 100%; max-width: none; } }
+                </style>
+            </head>
+            <body>
+                <div class="receipt">
+                    <h1>SPAKLZ 2026 TOUR</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>品項</th>
+                                <th style="text-align: center;">數量</th>
+                                <th style="text-align: right;">小計</th>
+                            </tr>
+                        </thead>
+                        <tbody>${itemRows}</tbody>
+                    </table>
+                    <div class="total-box">
+                        <div style="display:flex; justify-content:space-between; font-size: 16px;"><span>總計 (KRW)</span><span>₩${total}</span></div>
+                        <div style="display:flex; justify-content:space-between; color:#4338ca; margin-top:5px; font-weight: bold;"><span>約合 (TWD)</span><span>NT$ ${twdTotal}</span></div>
+                    </div>
+                    <div class="bonus">
+                        <div style="font-weight: bold; margin-bottom: 4px;">特典參考</div>
+                        <div>5W 特典：${bonus5w} 份</div>
+                        <div>10W 特典：${bonus10w} 份</div>
+                    </div>
+                    <div style="text-align: center; font-size: 10px; color: #cbd5e1; margin-top: 20px;">
+                        Generated at ${new Date().toLocaleString()}
+                    </div>
+                </div>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
     }
 
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Spaklz 2026 購物清單</title>
-            <style>
-                body { font-family: -apple-system, sans-serif; padding: 20px; background: #f1f5f9; color: #334155; }
-                .receipt {width: 95%;max-width: 800px;margin: 10px auto;background: white;padding: 20px;border-radius: 12px;box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-                h1 { text-align: center; font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 20px; border-bottom: 2px solid #0f172a; padding-bottom: 10px; }
-                table {width: 100%; border-collapse: collapse;table-layout: fixed; /* 固定佈局確保比例一致 */}
-                th:nth-child(1), td:nth-child(1) { width: 60px; }  /* 圖片欄 */
-                th:nth-child(2), td:nth-child(2) { width: auto; }  /* 名稱欄（自動伸展） */
-                th:nth-child(3), td:nth-child(3) { width: 50px; }  /* 數量欄 */
-                th:nth-child(4), td:nth-child(4) { width: 100px; } /* 小計欄 */ }
-                .total-box { background: #f8fafc; padding: 15px; border-radius: 12px; margin-top: 20px; border: 1px solid #e2e8f0; }
-                .bonus { color: #be123c; font-size: 0.85rem; margin-top: 15px; padding: 10px; border-left: 4px solid #fb7185; background: #fff1f2; }
-                @media print { body { background: white; padding: 0; } .receipt { border: none; box-shadow: none; width: 100%; max-width: none; } }
-            </style>
-        </head>
-        <body>
-            <div class="receipt">
-                <h1>SPAKLZ 2026 TOUR</h1>
-                <table>
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>商品項目</th>
-                            <th style="text-align: center;">數量</th>
-                            <th style="text-align: right;">小計</th>
-                        </tr>
-                    </thead>
-                    <tbody>${itemRows}</tbody>
-                </table>
-                <div class="total-box">
-                    <div style="display:flex; justify-content:space-between; font-size: 16px;"><span>總計 (KRW)</span><span>₩ ${total}</span></div>
-                    <div style="display:flex; justify-content:space-between; color:#4338ca; margin-top:5px; font-weight: bold;"><span>預估 (TWD)</span><span>NT$ ${twdTotal}</span></div>
-                </div>
-                <div class="bonus">
-                    <div style="font-weight: bold; margin-bottom: 4px;">🎁 特典計算結果：</div>
-                    <div>• 5W 滿額特典：${bonus5w} 份</div>
-                    <div>• 10W 滿額特典：${bonus10w} 份</div>
-                </div>
-                <div style="text-align: center; font-size: 10px; color: #cbd5e1; margin-top: 20px;">
-                    Generated at ${new Date().toLocaleString()}
-                </div>
-            </div>
-        </body>
-        </html>
-    `);
-    printWindow.document.close();
-}
+    renderRows();
+    bindEvents();
+    calculate();
     </script>
 </body>
 </html>
